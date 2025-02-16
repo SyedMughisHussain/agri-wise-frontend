@@ -7,8 +7,6 @@ import { View } from "react-native";
 import "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
-
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -20,27 +18,37 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    async function setData() {
-      const appData = await AsyncStorage.getItem("appLaunched");
-      if (appData == null) {
-        setFirstLaunch(true);
-        AsyncStorage.setItem("appLaunched", "false");
-      } else {
-        setFirstLaunch(false);
+    async function checkFirstLaunch() {
+      console.log("Running");
+      try {
+        const appData = await AsyncStorage.getItem("appLaunched");
+
+        if (appData === null) {
+          // First time launching the app
+          setFirstLaunch(true);
+          await AsyncStorage.setItem("appLaunched", "true"); // Store as launched
+          console.log("firstLaunch1", firstLaunch);
+        } else {
+          setFirstLaunch(false);
+        }
+      } catch (error) {
+        console.error("Error reading launch state:", error);
       }
     }
-    setData();
+    checkFirstLaunch();
   }, []);
 
   useEffect(() => {
     async function prepare() {
-      if (loaded) {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (loaded && firstLaunch !== null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Reduce delay
         setAppReady(true);
       }
     }
     prepare();
-  }, [loaded]);
+  }, [loaded, firstLaunch]);
+
+  console.log("firstLaunch", firstLaunch);
 
   const onLayoutRootView = useCallback(async () => {
     if (appReady) {
@@ -48,14 +56,18 @@ export default function RootLayout() {
     }
   }, [appReady]);
 
-  if (!appReady) {
-    return null;
+  if (!appReady || firstLaunch === null) {
+    return null; // Prevent rendering until everything is ready
   }
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        {firstLaunch ? (
+          <Stack.Screen name="(Onboarding)" options={{ headerShown: false }} />
+        ) : (
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        )}
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
