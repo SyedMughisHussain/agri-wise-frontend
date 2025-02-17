@@ -1,7 +1,7 @@
 import { setItem } from "@/utils/asyncStorage";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Image } from "react-native";
+import { Image, View, StyleSheet } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
 
 const OnboardingScreen = () => {
@@ -20,7 +20,12 @@ const OnboardingScreen = () => {
         {
           backgroundColor: "#FFFFFF",
           image: (
-            <Image source={require("../../assets/images/onboarding1.png")} />
+            <View style={styles.imageWrapper}>
+              <Image
+                style={styles.imageWrapper}
+                source={require("../../assets/images/onboarding1.png")}
+              />
+            </View>
           ),
           title: "Monitoring Soil and Plant",
           subtitle:
@@ -29,7 +34,12 @@ const OnboardingScreen = () => {
         {
           backgroundColor: "#FFFFFF",
           image: (
-            <Image source={require("../../assets/images/onboarding2.png")} />
+            <View style={styles.imageWrapper}>
+              <Image
+                style={styles.imageWrapper}
+                source={require("../../assets/images/onboarding2.png")}
+              />
+            </View>
           ),
           title: "Early detection of plant and soil diseases",
           subtitle:
@@ -38,7 +48,12 @@ const OnboardingScreen = () => {
         {
           backgroundColor: "#FFFFFF",
           image: (
-            <Image source={require("../../assets/images/onboarding3.png")} />
+            <View style={styles.imageWrapper}>
+              <Image
+                style={styles.imageWrapper}
+                source={require("../../assets/images/onboarding3.png")}
+              />
+            </View>
           ),
           title: "Improve agriculture precision",
           subtitle:
@@ -48,5 +63,14 @@ const OnboardingScreen = () => {
     />
   );
 };
+
+const styles = StyleSheet.create({
+  imageWrapper: {
+    height: 200,
+    width: 200,
+    resizeMode: "contain",
+    alignSelf: "center",
+  },
+});
 
 export default OnboardingScreen;
