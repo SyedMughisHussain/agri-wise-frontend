@@ -1,54 +1,61 @@
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState, useCallback } from "react";
 import { View } from "react-native";
 import "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import OnboardingScreen from "./(Onboarding)";
+import HomeScreen from "./(tabs)";
+import { getItem } from "@/utils/asyncStorage";
 
 SplashScreen.preventAutoHideAsync();
 
+const Stack = createNativeStackNavigator();
+
 export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
-  const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  useEffect(() => {
-    async function checkFirstLaunch() {
-      console.log("Running");
-      try {
-        const appData = await AsyncStorage.getItem("appLaunched");
+  // useEffect(() => {
+  //   const checkIfAlreadyOnboarded = async () => {
+  //     let onBoarded = await getItem("onboarded");
+  //     if (onBoarded == 1) {
+  //       setShowOnboarding(false);
+  //     } else {
+  //       setShowOnboarding(true);
+  //     }
+  //   };
+  //   checkIfAlreadyOnboarded();
+  // }, []);
 
-        if (appData === null) {
-          // First time launching the app
-          setFirstLaunch(true);
-          await AsyncStorage.setItem("appLaunched", "true"); // Store as launched
-          console.log("firstLaunch1", firstLaunch);
-        } else {
-          setFirstLaunch(false);
-        }
-      } catch (error) {
-        console.error("Error reading launch state:", error);
+  useEffect(() => {
+    const checkIfAlreadyOnboarded = async () => {
+      let onBoarded = await getItem("onboarded");
+      if (onBoarded === "1") {
+        setShowOnboarding(false);
+      } else {
+        setShowOnboarding(true);
       }
-    }
-    checkFirstLaunch();
+    };
+    checkIfAlreadyOnboarded();
   }, []);
 
   useEffect(() => {
     async function prepare() {
-      if (loaded && firstLaunch !== null) {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Reduce delay
+      if (loaded) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setAppReady(true);
       }
     }
     prepare();
-  }, [loaded, firstLaunch]);
-
-  console.log("firstLaunch", firstLaunch);
+  }, [loaded]);
 
   const onLayoutRootView = useCallback(async () => {
     if (appReady) {
@@ -56,21 +63,59 @@ export default function RootLayout() {
     }
   }, [appReady]);
 
-  if (!appReady || firstLaunch === null) {
-    return null; // Prevent rendering until everything is ready
+  if (!appReady) {
+    return null;
   }
 
-  return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <Stack>
-        {firstLaunch ? (
-          <Stack.Screen name="(Onboarding)" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        )}
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </View>
-  );
+  if (showOnboarding == null) {
+    return null;
+  }
+
+  if (showOnboarding) {
+    return (
+      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Onboarding">
+            <Stack.Screen
+              name="(Onboarding)"
+              options={{
+                headerShown: false,
+              }}
+              component={OnboardingScreen}
+            />
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+              }}
+              component={HomeScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    );
+  } else {
+    return (
+      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="(tabs)">
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+              }}
+              component={HomeScreen}
+            />
+            <Stack.Screen
+              name="(Onboarding)"
+              options={{
+                headerShown: false,
+              }}
+              component={OnboardingScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    );
+  }
 }
