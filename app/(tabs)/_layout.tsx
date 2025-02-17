@@ -7,12 +7,15 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import TabTwoScreen from "./explore";
+import HomeScreen from "./index";
+
+const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
+    <Tab.Navigator
       screenOptions={{
         // tabBarActiveTintColor: "blue",
         headerShown: false,
@@ -27,8 +30,9 @@ export default function TabLayout() {
         }),
       }}
     >
-      <Tabs.Screen
+      <Tab.Screen
         name="index"
+        component={HomeScreen}
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
@@ -36,8 +40,9 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      <Tab.Screen
         name="explore"
+        component={TabTwoScreen}
         options={{
           title: "Explore",
           tabBarIcon: ({ color }) => (
@@ -45,6 +50,6 @@ export default function TabLayout() {
           ),
         }}
       />
-    </Tabs>
+    </Tab.Navigator>
   );
 }
