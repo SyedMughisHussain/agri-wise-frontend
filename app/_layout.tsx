@@ -1,15 +1,12 @@
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 import { useEffect, useState, useCallback } from "react";
 import { View } from "react-native";
-import "react-native-reanimated";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OnboardingScreen from "./(Onboarding)";
 import { getItem } from "@/utils/asyncStorage";
 import TabLayout from "./(tabs)/_layout";
+import Login from "./login";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,8 +49,6 @@ export default function RootLayout() {
   }
 
   return (
-    // <NavigationContainer>
-
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <Stack.Navigator
         initialRouteName={showOnboarding ? "(Onboarding)" : "(tabs)"}
@@ -68,9 +63,12 @@ export default function RootLayout() {
           options={{ headerShown: false }}
           component={TabLayout}
         />
+        <Stack.Screen
+          name="login"
+          options={{ headerShown: false }}
+          component={Login}
+        />
       </Stack.Navigator>
-      <StatusBar style="auto" />
     </View>
-    // </NavigationContainer>
   );
 }
