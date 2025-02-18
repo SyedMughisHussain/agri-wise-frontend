@@ -1,17 +1,16 @@
-import React from "react";
 import { useRouter } from "expo-router";
 import { Button, Text } from "react-native";
 
-export default function Login() {
+export default function Success() {
   const navigation = useRouter();
 
   function hnadleNavigation() {
-    navigation.push("/Otp");
+    navigation.push("/(tabs)");
+    console.log("Pushing");
   }
-
   return (
     <>
-      <Text>This is an login page</Text>
+      <Text>Success screen</Text>
       <Button title="Push" onPress={hnadleNavigation} />
     </>
   );
