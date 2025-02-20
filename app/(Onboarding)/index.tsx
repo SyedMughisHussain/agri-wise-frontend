@@ -8,7 +8,7 @@ const OnboardingScreen = () => {
   const router = useRouter();
 
   const handleDone = () => {
-    router.push("/(tabs)");
+    router.push("/login");
     setItem("onboarded", "1");
   };
 

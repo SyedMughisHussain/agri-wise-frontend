@@ -3,10 +3,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState, useCallback } from "react";
 import { View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import OnboardingScreen from "./(Onboarding)";
-import { getItem } from "@/utils/asyncStorage";
-import TabLayout from "./(tabs)/_layout";
-import Login from "./login";
+import MainStack from "./navigation/MainStack";
+import AuthStack from "./navigation/AuthStack";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -14,19 +12,11 @@ const Stack = createNativeStackNavigator();
 
 export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-
-  useEffect(() => {
-    const checkIfAlreadyOnboarded = async () => {
-      let onBoarded = await getItem("onboarded");
-      setShowOnboarding(onBoarded !== "1");
-    };
-    checkIfAlreadyOnboarded();
-  }, []);
 
   useEffect(() => {
     async function prepare() {
@@ -44,31 +34,13 @@ export default function RootLayout() {
     }
   }, [appReady]);
 
-  if (!appReady || showOnboarding === null) {
+  if (!appReady) {
     return null;
   }
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <Stack.Navigator
-        initialRouteName={showOnboarding ? "(Onboarding)" : "(tabs)"}
-      >
-        <Stack.Screen
-          name="(Onboarding)"
-          options={{ headerShown: false }}
-          component={OnboardingScreen}
-        />
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false }}
-          component={TabLayout}
-        />
-        <Stack.Screen
-          name="login"
-          options={{ headerShown: false }}
-          component={Login}
-        />
-      </Stack.Navigator>
+      {isLoggedIn ? <MainStack /> : <AuthStack />}
     </View>
   );
 }
