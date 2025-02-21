@@ -34,11 +34,15 @@ const AuthStack = () => {
         component={Login}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Otp" component={Otp} options={{ title: "Otp" }} />
+      <Stack.Screen
+        name="Otp"
+        component={Otp}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Success"
         component={Success}
-        options={{ title: "Success" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="(Onboarding)"

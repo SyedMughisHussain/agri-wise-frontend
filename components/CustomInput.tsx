@@ -3,14 +3,13 @@ import { TextInput, StyleSheet, View, Text, Image } from "react-native";
 
 type CustomInputProps = {
   placeholder: string;
-  onChangeText: (string: any) => void;
+  onChangeText: (text: string) => void;
   maxLength?: number;
 };
 
 export default function CustomInput({
   placeholder,
   onChangeText,
-  maxLength,
 }: CustomInputProps) {
   return (
     <View style={styles.container}>
@@ -40,7 +39,8 @@ export default function CustomInput({
       <TextInput
         style={styles.input}
         placeholder={placeholder}
-        onChange={onChangeText}
+        onChangeText={onChangeText}
+        maxLength={10}
         keyboardType="number-pad"
       />
     </View>
@@ -51,13 +51,13 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
-    padding: 10,
+    padding: 15,
     justifyContent: "space-around",
     alignItems: "center",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#B0ABAB",
+    borderColor: "#B0ABAB33",
     paddingTop: 6,
     paddingRight: 16,
     paddingLeft: 16,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 18,
     fontWeight: 500,
-    width: 263,
+    width: 225,
     height: 48,
   },
 });

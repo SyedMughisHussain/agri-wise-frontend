@@ -1,24 +1,108 @@
-import React from "react";
 import { useRouter } from "expo-router";
-import { Button, Text } from "react-native";
+import {
+  Button,
+  Text,
+  Image,
+  View,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import CustomInput from "@/components/CustomInput";
+import CustomButton from "@/components/CustomButton";
+import { Client, Account, ID } from "react-native-appwrite";
+
+import { useState } from "react";
+
+const client = new Client()
+  .setEndpoint("https://cloud.appwrite.io/v1")
+  .setProject("67954a8700063b9eee96")
+  .setPlatform("com.mughis.agri-wise");
+
+const account = new Account(client);
 
 export default function Login() {
   const navigation = useRouter();
 
-  function hnadleNavigation() {
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const handleSubmit = async () => {
+    const token = await account.createPhoneToken(
+      ID.unique(),
+      `+92${phoneNumber}`
+    );
     navigation.push("/Otp");
-  }
+  };
 
   return (
-    <>
-      <Text>This is an login page</Text>
-      <Button title="Push" onPress={hnadleNavigation} />
+    <ScrollView style={{ backgroundColor: "#FFFFFF" }}>
+      <View style={styles.imageWrapper}>
+        <Image source={require("../assets/images/login.png")} />
+      </View>
+      <Text style={styles.title}>Log In</Text>
+      <Text style={styles.description}>Please sign in to continue</Text>
+      <Text
+        style={{
+          marginTop: 24,
+          fontSize: 20,
+          fontWeight: 600,
+          marginLeft: 19,
+          textAlign: "center",
+          color: "#4BA26A",
+        }}
+      >
+        Login to Your Account
+      </Text>
+
+      <View
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 320,
+          height: 36,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: "#B0ABAB",
+          marginLeft: 19,
+          marginTop: 24,
+        }}
+      >
+        <Text
+          style={{
+            color: "#B0ABAB",
+            fontWeight: 600,
+            fontSize: 14,
+          }}
+        >
+          Phone Number
+        </Text>
+      </View>
+
       <CustomInput
         placeholder="3193039832"
-        maxLength={50}
-        onChangeText={hnadleNavigation}
+        onChangeText={setPhoneNumber}
+        maxLength={10}
       />
-    </>
+      <CustomButton title="Send OTP" onPress={handleSubmit} />
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  imageWrapper: {
+    alignItems: "center",
+    marginTop: 48,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 700,
+    marginLeft: 19,
+    marginTop: 24,
+  },
+  description: {
+    fontSize: 16,
+    marginLeft: 19,
+    marginTop: 8,
+    color: "#B0ABAB",
+  },
+});
