@@ -1,6 +1,6 @@
 import CustomButton from "@/components/CustomButton";
 import { useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Client, Account, ID } from "react-native-appwrite";
 import {
   StyleSheet,
@@ -10,8 +10,10 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
+  Alert,
 } from "react-native";
 import OTPTextView from "react-native-otp-textinput";
+import { logger } from "react-native-reanimated/lib/typescript/logger";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
@@ -65,16 +67,61 @@ const styles = StyleSheet.create({
 const Otp = ({ route }: any) => {
   const navigation = useRouter();
   const [otpInput, setOtpInput] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
+
   const input = useRef<OTPTextView>(null);
 
-  const { phoneNumber, userId } = route.params;
+  const { phoneNumber } = route.params;
 
   const handleOtpChange = (otp: string) => {
     setOtpInput(otp);
   };
 
+  useEffect(() => {
+    const response = !validateOtp();
+    setIsDisabled(response);
+  }, [otpInput]);
+
+  const validateOtp = () => {
+    if (!otpInput) {
+      return false;
+    }
+    if (!/^\d{6}$/.test(otpInput)) {
+      return false;
+    }
+    setIsDisabled(false);
+    return true;
+  };
+
   const handleSubmit = async () => {
-    navigation.push("/Success");
+    if (otpInput.length == 6) {
+      navigation.push("/Success");
+
+      await fetch("http://192.168.100.201:3000/api/v1/user/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber }),
+      })
+        .then(async (response) => {
+          const res = await response.json();
+          console.log(res.token);
+        })
+        .catch((e) => {
+          console.log("Error:", e.message);
+        });
+    } else {
+      Alert.alert("Error", "Invalid OTP");
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      await account.createPhoneToken(ID.unique(), `+92${phoneNumber}`);
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    }
   };
 
   return (
@@ -92,18 +139,16 @@ const Otp = ({ route }: any) => {
           inputCount={6}
           keyboardType="numeric"
           handleTextChange={handleOtpChange}
+          defaultValue={otpInput}
         />
-        <Pressable>
+        <Pressable onPress={handleResendOtp}>
           <Text style={styles.pressable}>Resend OTP</Text>
         </Pressable>
         <CustomButton
           title="Verify OTP"
           onPress={handleSubmit}
-          disabled={false}
+          disabled={isDisabled}
         />
-        {/* <View style={styles.buttonWrapper}>
-          <Button title="Submit OTP" onPress={handleSubmit} />
-        </View> */}
       </ScrollView>
     </SafeAreaView>
   );

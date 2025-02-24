@@ -5,6 +5,7 @@ import CustomButton from "@/components/CustomButton";
 import { Client, Account, ID } from "react-native-appwrite";
 
 import { useEffect, useState } from "react";
+import React from "react";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
@@ -18,7 +19,6 @@ export default function Login() {
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const response = !validatePhoneNumber();
@@ -27,14 +27,11 @@ export default function Login() {
 
   const validatePhoneNumber = () => {
     if (!phoneNumber) {
-      setErrorMessage("Phone number is required.");
       return false;
     }
     if (!/^\d{10}$/.test(phoneNumber)) {
-      setErrorMessage("Phone number must be exactly 10 digits.");
       return false;
     }
-    setErrorMessage("");
     setIsDisabled(false);
     return true;
   };
@@ -47,7 +44,6 @@ export default function Login() {
         ID.unique(),
         `+92${phoneNumber}`
       );
-      console.log(token);
 
       if (token) {
         navigation.push({
@@ -110,9 +106,6 @@ export default function Login() {
         onChangeText={setPhoneNumber}
         maxLength={10}
       />
-      {errorMessage ? (
-        <Text style={styles.errorText}>{errorMessage}</Text>
-      ) : null}
       <CustomButton
         title="Send OTP"
         onPress={handleSubmit}

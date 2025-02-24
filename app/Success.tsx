@@ -1,13 +1,18 @@
 import { useRouter } from "expo-router";
-import { Button, Text, View, StyleSheet, Image } from "react-native";
+import { useEffect } from "react";
+import { Text, View, StyleSheet, Image } from "react-native";
 
 export default function Success() {
   const navigation = useRouter();
 
-  function hnadleNavigation() {
-    navigation.push("/(tabs)");
-    console.log("Pushing");
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.push("/(tabs)");
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup function to avoid memory leaks
+  }, []);
+
   return (
     <View
       style={{
