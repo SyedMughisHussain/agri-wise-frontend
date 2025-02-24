@@ -1,6 +1,7 @@
 import CustomButton from "@/components/CustomButton";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
+import { Client, Account, ID } from "react-native-appwrite";
 import {
   StyleSheet,
   Text,
@@ -11,6 +12,13 @@ import {
   Pressable,
 } from "react-native";
 import OTPTextView from "react-native-otp-textinput";
+
+const client = new Client()
+  .setEndpoint("https://cloud.appwrite.io/v1")
+  .setProject("67954a8700063b9eee96")
+  .setPlatform("com.mughis.agri-wise");
+
+const account = new Account(client);
 
 const styles = StyleSheet.create({
   safeAreaView: {
@@ -54,17 +62,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const Otp = () => {
+const Otp = ({ route }: any) => {
   const navigation = useRouter();
   const [otpInput, setOtpInput] = useState("");
   const input = useRef<OTPTextView>(null);
+
+  const { phoneNumber, userId } = route.params;
 
   const handleOtpChange = (otp: string) => {
     setOtpInput(otp);
   };
 
-  const handleSubmit = () => {
-    console.log("Entered OTP:", otpInput);
+  const handleSubmit = async () => {
     navigation.push("/Success");
   };
 
@@ -87,7 +96,11 @@ const Otp = () => {
         <Pressable>
           <Text style={styles.pressable}>Resend OTP</Text>
         </Pressable>
-        <CustomButton title="Verify OTP" onPress={handleSubmit} />
+        <CustomButton
+          title="Verify OTP"
+          onPress={handleSubmit}
+          disabled={false}
+        />
         {/* <View style={styles.buttonWrapper}>
           <Button title="Submit OTP" onPress={handleSubmit} />
         </View> */}

@@ -1,32 +1,28 @@
-import { Button, View, StyleSheet, Text, Pressable } from "react-native";
+import { View, StyleSheet, Text, Pressable } from "react-native";
 
 type CustomButtonProps = {
   title: string;
   onPress: () => void;
+  disabled?: boolean;
 };
 
-export default function CustomButton({ title, onPress }: CustomButtonProps) {
+export default function CustomButton({
+  title,
+  onPress,
+  disabled = false,
+}: CustomButtonProps) {
   return (
     <Pressable
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      onPress={onPress}
+      style={({ pressed }) => [
+        styles.button,
+        disabled && styles.disabledButton,
+        pressed && !disabled && styles.pressedButton,
+      ]}
+      onPress={!disabled ? onPress : undefined}
     >
-      <View style={styles.button}>
-        <Text
-          style={{
-            textAlign: "center",
-            color: "#FFFFFF",
-            fontWeight: 700,
-            fontSize: 16,
-          }}
-        >
-          {title}
-        </Text>
-      </View>
+      <Text style={[styles.text, disabled && styles.disabledText]}>
+        {title}
+      </Text>
     </Pressable>
   );
 }
@@ -35,8 +31,27 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#4BA26A",
     padding: 13,
+    margin: 19,
     borderRadius: 12,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     width: 320,
     height: 48,
+  },
+  pressedButton: {
+    opacity: 0.7,
+  },
+  disabledButton: {
+    backgroundColor: "gray",
+  },
+  text: {
+    textAlign: "center",
+    color: "#FFFFFF",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  disabledText: {
+    color: "darkgray",
   },
 });
