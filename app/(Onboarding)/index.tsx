@@ -5,10 +5,10 @@ import { Image, View, StyleSheet } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
 
 const OnboardingScreen = () => {
-  const router = useRouter();
+  const navigation = useRouter();
 
   const handleDone = () => {
-    router.push("/login");
+    navigation.push("/login");
     setItem("onboarded", "1");
   };
 

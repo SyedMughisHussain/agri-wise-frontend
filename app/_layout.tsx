@@ -5,14 +5,22 @@ import { View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainStack from "./navigation/MainStack";
 import AuthStack from "./navigation/AuthStack";
+import { getItem } from "@/utils/asyncStorage";
 
 SplashScreen.preventAutoHideAsync();
-
-const Stack = createNativeStackNavigator();
-
 export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    async function checkLoginStatus() {
+      const token = await getItem("token");
+      if (token) {
+        setIsLoggedIn(true);
+      }
+    }
+    checkLoginStatus();
+  }, []);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),

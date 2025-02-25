@@ -5,15 +5,13 @@ import { Client, Account, ID } from "react-native-appwrite";
 import {
   StyleSheet,
   Text,
-  View,
-  Button,
   SafeAreaView,
   ScrollView,
   Pressable,
   Alert,
 } from "react-native";
 import OTPTextView from "react-native-otp-textinput";
-import { logger } from "react-native-reanimated/lib/typescript/logger";
+import { setItem } from "@/utils/asyncStorage";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
@@ -95,9 +93,7 @@ const Otp = ({ route }: any) => {
 
   const handleSubmit = async () => {
     if (otpInput.length == 6) {
-      navigation.push("/Success");
-
-      await fetch("http://192.168.100.201:3000/api/v1/user/signup", {
+      await fetch("https://agri-wise-backend.vercel.app/api/v1/user/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +102,8 @@ const Otp = ({ route }: any) => {
       })
         .then(async (response) => {
           const res = await response.json();
-          console.log(res.token);
+          setItem("token", res.token);
+          navigation.push("/Success");
         })
         .catch((e) => {
           console.log("Error:", e.message);
@@ -139,7 +136,6 @@ const Otp = ({ route }: any) => {
           inputCount={6}
           keyboardType="numeric"
           handleTextChange={handleOtpChange}
-          defaultValue={otpInput}
         />
         <Pressable onPress={handleResendOtp}>
           <Text style={styles.pressable}>Resend OTP</Text>

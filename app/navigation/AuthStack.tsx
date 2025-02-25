@@ -23,14 +23,13 @@ const AuthStack = () => {
   if (showOnboarding === null) {
     return null;
   }
-  console.log(showOnboarding);
 
   return (
     <Stack.Navigator
-      initialRouteName={showOnboarding ? "(Onboarding)" : "Login"}
+      initialRouteName={showOnboarding ? "(Onboarding)" : "login"}
     >
       <Stack.Screen
-        name="Login"
+        name="login"
         component={Login}
         options={{ headerShown: false }}
       />
