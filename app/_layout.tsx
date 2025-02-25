@@ -2,7 +2,6 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState, useCallback } from "react";
 import { View } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainStack from "./navigation/MainStack";
 import AuthStack from "./navigation/AuthStack";
 import { getItem } from "@/utils/asyncStorage";
