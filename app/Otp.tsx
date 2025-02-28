@@ -15,8 +15,7 @@ import { setItem } from "@/utils/asyncStorage";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject("67954a8700063b9eee96")
-  .setPlatform("com.mughis.agri-wise");
+  .setProject("67954a8700063b9eee96");
 
 const account = new Account(client);
 
@@ -66,10 +65,11 @@ const Otp = ({ route }: any) => {
   const navigation = useRouter();
   const [otpInput, setOtpInput] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const input = useRef<OTPTextView>(null);
 
-  const { phoneNumber } = route.params;
+  const { phoneNumber, userId } = route.params;
 
   const handleOtpChange = (otp: string) => {
     setOtpInput(otp);
@@ -92,7 +92,12 @@ const Otp = ({ route }: any) => {
   };
 
   const handleSubmit = async () => {
-    if (otpInput.length == 6) {
+    try {
+      setLoading(true);
+      console.log(otpInput);
+      console.log(userId);
+
+      await account.updatePhoneVerification(userId, otpInput);
       await fetch("https://agri-wise-backend.vercel.app/api/v1/user/signup", {
         method: "POST",
         headers: {
@@ -102,14 +107,17 @@ const Otp = ({ route }: any) => {
       })
         .then(async (response) => {
           const res = await response.json();
+          console.log(res);
+
           setItem("token", res.token);
           navigation.push("/Success");
         })
         .catch((e) => {
           console.log("Error:", e.message);
         });
-    } else {
-      Alert.alert("Error", "Invalid OTP");
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+      setLoading(false);
     }
   };
 
@@ -144,6 +152,7 @@ const Otp = ({ route }: any) => {
           title="Verify OTP"
           onPress={handleSubmit}
           disabled={isDisabled}
+          loading={loading}
         />
       </ScrollView>
     </SafeAreaView>

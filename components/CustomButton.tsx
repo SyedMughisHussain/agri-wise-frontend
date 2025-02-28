@@ -1,15 +1,23 @@
-import { View, StyleSheet, Text, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 
 type CustomButtonProps = {
   title: string;
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean;
 };
 
 export default function CustomButton({
   title,
   onPress,
   disabled = false,
+  loading = false,
 }: CustomButtonProps) {
   return (
     <Pressable
@@ -20,9 +28,13 @@ export default function CustomButton({
       ]}
       onPress={!disabled ? onPress : undefined}
     >
-      <Text style={[styles.text, disabled && styles.disabledText]}>
-        {title}
-      </Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#FFFFFF" />
+      ) : (
+        <Text style={[styles.text, disabled && styles.disabledText]}>
+          {title}
+        </Text>
+      )}
     </Pressable>
   );
 }

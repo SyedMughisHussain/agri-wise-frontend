@@ -9,8 +9,7 @@ import React from "react";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject("67954a8700063b9eee96")
-  .setPlatform("com.mughis.agri-wise");
+  .setProject("67954a8700063b9eee96");
 
 const account = new Account(client);
 
@@ -19,40 +18,58 @@ export default function Login() {
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const response = !validatePhoneNumber();
     setIsDisabled(response);
   }, [phoneNumber]);
 
+  // const validatePhoneNumber = () => {
+  //   if (!phoneNumber) {
+  //     return false;
+  //   }
+  //   if (!/^\d{12}$/.test(phoneNumber)) {
+  //     return false;
+  //   }
+  //   setIsDisabled(false);
+  //   return true;
+  // };
+
   const validatePhoneNumber = () => {
     if (!phoneNumber) {
       return false;
     }
-    if (!/^\d{10}$/.test(phoneNumber)) {
+
+    // Remove spaces before validation
+    const digitsOnly = phoneNumber.replace(/\s+/g, "");
+
+    // Check if exactly 10 digits (without country code)
+    if (digitsOnly.length !== 10) {
       return false;
     }
-    setIsDisabled(false);
+
     return true;
   };
 
   const handleSubmit = async () => {
     if (!validatePhoneNumber()) return;
-
+    const modifiedPhoneNumber = phoneNumber.replaceAll(" ", "");
     try {
+      setLoading(true);
       const token = await account.createPhoneToken(
         ID.unique(),
-        `+92${phoneNumber}`
+        `+92${modifiedPhoneNumber}`
       );
-
       if (token) {
         navigation.push({
           pathname: "/Otp",
-          params: { phoneNumber, userId: token.userId },
+          params: { modifiedPhoneNumber, userId: token.userId },
         });
       }
     } catch (error: any) {
       Alert.alert("Error", error.message);
+      setLoading(false);
     }
   };
 
@@ -102,14 +119,14 @@ export default function Login() {
       </View>
 
       <CustomInput
-        placeholder="3193039832"
+        placeholder="Enter Phone Number.."
         onChangeText={setPhoneNumber}
-        maxLength={10}
       />
       <CustomButton
         title="Send OTP"
         onPress={handleSubmit}
         disabled={isDisabled}
+        loading={loading}
       />
     </ScrollView>
   );
