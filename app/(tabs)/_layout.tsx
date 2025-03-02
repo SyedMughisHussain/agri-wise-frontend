@@ -1,6 +1,5 @@
-import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, Image, TouchableOpacity } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -15,8 +14,7 @@ export default function TabLayout() {
   return (
     <Tab.Navigator
       screenOptions={{
-        // tabBarActiveTintColor: "blue",
-        headerShown: false,
+        tabBarActiveTintColor: "blue",
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
@@ -32,9 +30,35 @@ export default function TabLayout() {
         component={HomeScreen}
         options={{
           title: "Home",
+          headerTitle: "",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
           ),
+          headerLeft: () => (
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={{ width: 70, height: 65 }}
+              resizeMode="contain"
+            />
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => console.log("Profile Clicked")}>
+              <Image
+                source={require("../../assets/images/avatar.png")}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  marginRight: 15,
+                }}
+              />
+            </TouchableOpacity>
+          ),
+          headerStyle: {
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
         }}
       />
       <Tab.Screen

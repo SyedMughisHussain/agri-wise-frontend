@@ -14,8 +14,8 @@ import OTPTextView from "react-native-otp-textinput";
 import { setItem } from "@/utils/asyncStorage";
 
 const client = new Client()
-  .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject("67954a8700063b9eee96");
+  .setProject("67c2b034000f4161854a")
+  .setPlatform("com.syedmughis.agriwise");
 
 const account = new Account(client);
 
@@ -69,7 +69,8 @@ const Otp = ({ route }: any) => {
 
   const input = useRef<OTPTextView>(null);
 
-  const { phoneNumber, userId } = route.params;
+  const { modifiedPhoneNumber, userId } = route.params;
+  const phoneNumber = modifiedPhoneNumber;
 
   const handleOtpChange = (otp: string) => {
     setOtpInput(otp);
@@ -94,36 +95,28 @@ const Otp = ({ route }: any) => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      console.log(otpInput);
-      console.log(userId);
-
-      await account.updatePhoneVerification(userId, otpInput);
-      await fetch("https://agri-wise-backend.vercel.app/api/v1/user/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ phoneNumber }),
-      })
-        .then(async (response) => {
-          const res = await response.json();
-          console.log(res);
-
-          setItem("token", res.token);
-          navigation.push("/Success");
-        })
-        .catch((e) => {
-          console.log("Error:", e.message);
-        });
+      const response = await account.createSession(userId, otpInput);
+      const fetchResponse = await fetch(
+        "https://agri-wise-backend.vercel.app/api/v1/user/signup",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phoneNumber }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setItem("token", res.token);
+      navigation.push("/Success");
     } catch (error: any) {
       Alert.alert("Error", error.message);
+    } finally {
       setLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
     try {
-      await account.createPhoneToken(ID.unique(), `+92${phoneNumber}`);
+      await account.createPhoneToken(ID.unique(), `+92${modifiedPhoneNumber}`);
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }

@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import React from "react";
 
 const client = new Client()
-  .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject("67954a8700063b9eee96");
+  .setProject("67c2b034000f4161854a")
+  .setPlatform("com.syedmughis.agriwise");
 
 const account = new Account(client);
 
@@ -25,26 +25,11 @@ export default function Login() {
     setIsDisabled(response);
   }, [phoneNumber]);
 
-  // const validatePhoneNumber = () => {
-  //   if (!phoneNumber) {
-  //     return false;
-  //   }
-  //   if (!/^\d{12}$/.test(phoneNumber)) {
-  //     return false;
-  //   }
-  //   setIsDisabled(false);
-  //   return true;
-  // };
-
   const validatePhoneNumber = () => {
     if (!phoneNumber) {
       return false;
     }
-
-    // Remove spaces before validation
     const digitsOnly = phoneNumber.replace(/\s+/g, "");
-
-    // Check if exactly 10 digits (without country code)
     if (digitsOnly.length !== 10) {
       return false;
     }
@@ -71,6 +56,7 @@ export default function Login() {
       Alert.alert("Error", error.message);
       setLoading(false);
     }
+    setLoading(false);
   };
 
   return (

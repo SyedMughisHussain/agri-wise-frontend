@@ -1,7 +1,17 @@
-import { StyleSheet, Image, Platform, Text } from "react-native";
+import { StyleSheet, Image, Platform, Text, View } from "react-native";
 
-export default function TabTwoScreen() {
-  return <Text>Hello World! Explore Screen</Text>;
+import { SafeAreaView } from "react-native-safe-area-context";
+
+function TabTwoScreen() {
+  return (
+    <SafeAreaView
+      style={{
+        backgroundColor: "white",
+      }}
+    >
+      <Text>Hello World</Text>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -16,3 +26,5 @@ const styles = StyleSheet.create({
     gap: 8,
   },
 });
+
+export default TabTwoScreen;
