@@ -61,7 +61,7 @@ export default function HomeScreen() {
             <Text style={styles.addCropText}>Add Crop</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.arrowButton}>
-            <IconSymbol size={24} name="chevron.right" color="#4CAF50" />
+            <IconSymbol size={30} name="chevron.right" color="#4CAF50" />
           </TouchableOpacity>
         </View>
 
@@ -73,36 +73,76 @@ export default function HomeScreen() {
             {/* Diagnose Diseases Feature */}
             <View style={styles.featureCard}>
               <View style={styles.featureIconContainer}>
-                <IconSymbol
-                  size={28}
-                  name="waveform.path.ecg"
-                  color="#4CAF50"
+                <Image
+                  source={require("../../assets/images/diagnose-disease.png")}
+                  style={{ width: 35, height: 35 }}
+                  resizeMode="contain"
                 />
               </View>
               <Text style={styles.featureDescription}>Diagnose your crop</Text>
               <TouchableOpacity style={styles.featureButton}>
                 <Text style={styles.featureButtonText}>Diagnose Diseases</Text>
-                <IconSymbol size={16} name="chevron.right" color="white" />
+                <View style={styles.featureArrowButton}>
+                  <IconSymbol size={18} name="chevron.right" color="#4CAF50" />
+                </View>
               </TouchableOpacity>
             </View>
 
             {/* Soil Status Feature */}
             <View style={styles.featureCard}>
               <View style={styles.featureIconContainer}>
-                <IconSymbol size={28} name="leaf.fill" color="#4CAF50" />
+                <Image
+                  source={require("../../assets/images/soil-status.png")}
+                  style={{ width: 35, height: 35 }}
+                  resizeMode="contain"
+                />
               </View>
               <Text style={styles.featureDescription}>
                 Follow your soil status
               </Text>
               <TouchableOpacity style={styles.featureButton}>
                 <Text style={styles.featureButtonText}>Soil Status</Text>
-                <IconSymbol size={16} name="chevron.right" color="white" />
+                <View style={styles.featureArrowButton}>
+                  <IconSymbol size={18} name="chevron.right" color="#4CAF50" />
+                </View>
               </TouchableOpacity>
             </View>
 
-            {/* Additional Feature Cards (placeholder) */}
-            <View style={styles.featureCard}></View>
-            <View style={styles.featureCard}></View>
+            <View style={styles.featureCard}>
+              <View style={styles.featureIconContainer}>
+                <Image
+                  source={require("../../assets/images/irrigation-control.png")}
+                  style={{ width: 35, height: 35 }}
+                  resizeMode="contain"
+                />
+              </View>
+              <Text style={styles.featureDescription}>
+                Control and save water
+              </Text>
+              <TouchableOpacity style={styles.featureButton}>
+                <Text style={styles.featureButtonText}>Irrigation Control</Text>
+                <View style={styles.featureArrowButton}>
+                  <IconSymbol size={18} name="chevron.right" color="#4CAF50" />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.featureCard}>
+              <View style={styles.featureIconContainer}>
+                <Image
+                  source={require("../../assets/images/scan-crop.png")}
+                  style={{ width: 35, height: 35 }}
+                  resizeMode="contain"
+                />
+              </View>
+              <Text style={styles.featureDescription}>Scan your crop</Text>
+              <TouchableOpacity style={styles.featureButton}>
+                <Text style={styles.featureButtonText}>Scan Crop</Text>
+                <View style={styles.featureArrowButton}>
+                  <IconSymbol size={18} name="chevron.right" color="#4CAF50" />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -209,11 +249,12 @@ const styles = StyleSheet.create({
   },
   arrowButton: {
     backgroundColor: "white",
-    borderRadius: 15,
-    width: 30,
-    height: 30,
+    borderRadius: 4,
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    width: 50,
+    height: 30,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -238,7 +279,7 @@ const styles = StyleSheet.create({
   featureCard: {
     backgroundColor: "#E8F5E9",
     borderRadius: 20,
-    padding: 20,
+    padding: 10,
     width: "48%",
     marginBottom: 15,
     height: 170,
@@ -247,12 +288,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
+    alignItems: "center",
   },
   featureIconContainer: {
     backgroundColor: "white",
-    borderRadius: 25,
-    width: 50,
-    height: 50,
+    borderRadius: 50,
+    width: 70,
+    height: 70,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 15,
@@ -263,14 +305,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   featureDescription: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 15,
+    fontSize: 13,
+    color: "#4BA26A",
+    textAlign: "center",
   },
   featureButton: {
-    backgroundColor: "#4CAF50",
-    borderRadius: 15,
-    padding: 10,
+    backgroundColor: "#4BA26A",
+    width: 142,
+    borderRadius: 10,
+    padding: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -281,10 +324,23 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  featureArrowButton: {
+    backgroundColor: "white",
+    borderRadius: 4,
+    width: 24,
+    height: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
   featureButtonText: {
     color: "white",
     fontWeight: "600",
-    fontSize: 13,
+    fontSize: 12,
   },
   leafIcon: {
     width: 24,

@@ -7,6 +7,7 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabTwoScreen from "./explore";
 import HomeScreen from "./index";
+import Notifications from "./notifications";
 
 const Tab = createBottomTabNavigator();
 
@@ -32,7 +33,7 @@ export default function TabLayout() {
           title: "Home",
           headerTitle: "",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <IconSymbol size={28} name="house.fill" color="#4CAF50" />
           ),
           headerLeft: () => (
             <Image
@@ -62,12 +63,22 @@ export default function TabLayout() {
         }}
       />
       <Tab.Screen
-        name="explore"
+        name="location"
         component={TabTwoScreen}
         options={{
-          title: "Explore",
+          title: "Location",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <IconSymbol size={28} name="location.fill" color="#4CAF50" />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="notifications"
+        component={Notifications}
+        options={{
+          title: "Notifications",
+          tabBarIcon: () => (
+            <IconSymbol size={28} name="bell.fill" color="#4CAF50" />
           ),
         }}
       />
