@@ -95,7 +95,7 @@ const Otp = ({ route }: any) => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const response = await account.createSession(userId, otpInput);
+      await account.createSession(userId, otpInput);
       const fetchResponse = await fetch(
         "https://agri-wise-backend.vercel.app/api/v1/user/signup",
         {

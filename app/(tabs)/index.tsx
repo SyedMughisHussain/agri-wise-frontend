@@ -6,13 +6,51 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useState } from "react";
+
+type WeatherApiType = {
+  cityName: string;
+  country: string;
+  weather: string;
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+  description: string;
+};
 
 export default function HomeScreen() {
+  const [weatherData, setWeatherData] = useState<WeatherApiType | null>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      const response = await fetch(
+        "https://api.openweathermap.org/data/2.5/weather?q=karachi,pk&appid=ed9762be5575457144a931c00af77267"
+      );
+      const data = await response.json();
+
+      setWeatherData({
+        cityName: data.name,
+        country: data.sys.country,
+        weather: data.weather[0].main,
+        temperature: data.main.temp,
+        humidity: data.main.humidity,
+        windSpeed: data.wind.speed,
+        description: data.weather[0].description,
+      });
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
+
   return (
     <SafeAreaView
       style={{
@@ -24,29 +62,43 @@ export default function HomeScreen() {
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Weather Card */}
-        <LinearGradient
-          colors={["#4BA26A", "#9DD0AF", "#BEE3CB"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.weatherCard}
-        >
-          <View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.temperatureText}>29</Text>
-              <Text style={{ fontSize: 50, color: "white" }}>°</Text>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#4BA26A" />
+        ) : (
+          <LinearGradient
+            colors={["#4BA26A", "#9DD0AF", "#BEE3CB"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.weatherCard}
+          >
+            <View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={styles.temperatureText}>
+                  {weatherData
+                    ? Math.round(weatherData.temperature - 273.15)
+                    : "29"}
+                </Text>
+                <Text style={{ fontSize: 50, color: "white" }}>°</Text>
+              </View>
+              <Text style={styles.locationSmallText}>
+                H:{weatherData?.humidity}° W:{weatherData?.windSpeed}°
+              </Text>
+              <Text style={styles.locationText}>
+                {weatherData?.country}, {weatherData?.cityName}
+              </Text>
             </View>
-            <Text style={styles.locationSmallText}>H:32° L:27°</Text>
-            <Text style={styles.locationText}>Pakistan, Karachi</Text>
-          </View>
-          <View style={styles.weatherIconContainer}>
-            <Image
-              source={require("../../assets/images/weather.png")}
-              style={styles.weatherImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.weatherCondition}>Cloudy</Text>
-          </View>
-        </LinearGradient>
+            <View style={styles.weatherIconContainer}>
+              <Image
+                source={require("../../assets/images/weather.png")}
+                style={styles.weatherImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.weatherCondition}>
+                {weatherData?.weather}
+              </Text>
+            </View>
+          </LinearGradient>
+        )}
 
         {/* Add Crop Button */}
         <View style={styles.addCropContainer}>
