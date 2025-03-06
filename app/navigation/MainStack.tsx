@@ -1,11 +1,6 @@
-import { getItem } from "@/utils/asyncStorage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useEffect, useState } from "react";
-import OnboardingScreen from "../(Onboarding)";
-import Login from "../login";
-import Otp from "../Otp";
-import Success from "../Success";
 import TabLayout from "../(tabs)/_layout";
+import Profile from "../Profile";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +12,7 @@ const MainStack = () => {
         component={TabLayout}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 };
