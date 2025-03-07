@@ -1,6 +1,19 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -10,11 +23,54 @@ import {
   BottomSheetView,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import { getItem } from "@/utils/asyncStorage";
 
 export default function Profile() {
   const navigation = useNavigation();
 
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  const fetchUser = async () => {
+    try {
+      setLoading(true);
+      const token = await getItem("token");
+
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await fetch(
+        "https://agri-wise-backend.vercel.app/api/v1/user/me",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setUserData(data.user);
+    } catch (error: any) {
+      console.error("Error fetching user:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
@@ -36,18 +92,42 @@ export default function Profile() {
               source={require("../assets/images/profile.png")}
               style={styles.profileImage}
             />
-            <Text style={styles.name}>Syed Mughis Hussain</Text>
-            <Text style={styles.phone}>+9231144324</Text>
+            {loading ? (
+              <View>
+                <ActivityIndicator size="large" color="#4BA26A" />
+              </View>
+            ) : error ? (
+              <View>
+                <Text style={styles.error}>{error}</Text>
+              </View>
+            ) : (
+              <View>
+                <Text style={styles.name}>
+                  {userData.name || "Your Name Here"}
+                </Text>
+                <Text style={styles.phone}>+92{userData.phoneNumber}</Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.menuContainer}>
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigation.navigate("Privacy" as never);
+              }}
+            >
               <MaterialIcons name="person" size={24} color="#4BA26A" />
               <Text style={styles.menuText}>My Account</Text>
               <MaterialIcons name="chevron-right" size={24} color="#4BA26A" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigation.navigate("Privacy" as never);
+              }}
+            >
               <MaterialIcons name="security" size={24} color="#4BA26A" />
               <Text style={styles.menuText}>Privacy Policy</Text>
               <MaterialIcons name="chevron-right" size={24} color="#4BA26A" />
@@ -152,7 +232,8 @@ const styles = StyleSheet.create({
   },
   phone: {
     fontSize: 16,
-    color: "#666",
+    color: "#98A1A1",
+    marginLeft: 15,
   },
   menuContainer: {
     paddingHorizontal: 16,
@@ -243,5 +324,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#E0E0E0",
     width: "100%",
     marginVertical: 12,
+  },
+  error: {
+    color: "#FF0000",
+    fontSize: 16,
+    fontWeight: "500",
   },
 });
