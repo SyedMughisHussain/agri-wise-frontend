@@ -4,6 +4,7 @@ import Profile from "../Profile";
 import Privacy from "../Privacy";
 import Account from "../Account";
 import Login from "../login";
+import Languages from "../Languages";
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,13 @@ const MainStack = () => {
         }}
       />
       <Stack.Screen name="Account" component={Account} />
+      <Stack.Screen
+        name="Language"
+        component={Languages}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };

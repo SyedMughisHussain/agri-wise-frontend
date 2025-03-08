@@ -9,7 +9,6 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-// Define the navigation type
 type PrivacyScreenProps = {
   navigation: NativeStackNavigationProp<any>;
 };

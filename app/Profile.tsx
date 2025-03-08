@@ -156,7 +156,12 @@ export default function Profile() {
               <MaterialIcons name="chevron-right" size={24} color="#4BA26A" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigation.navigate("Language" as never);
+              }}
+            >
               <MaterialIcons name="language" size={24} color="#4BA26A" />
               <Text style={styles.menuText}>Languages</Text>
               <MaterialIcons name="chevron-right" size={24} color="#4BA26A" />
