@@ -1,46 +1,108 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
-  TouchableOpacity,
+  TextInput,
+  Image,
+  Alert,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import CustomButton from "@/components/CustomButton";
+import { getItem } from "@/utils/asyncStorage";
 
-// Define the navigation type
-type PrivacyScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-};
+export default function Account() {
+  const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
-export default function Account({ navigation }: PrivacyScreenProps) {
+  const updateUserProfile = async () => {
+    try {
+      setLoading(true);
+      const token = await getItem("token");
+
+      if (!token) {
+        Alert.alert("Error", "Please login first");
+        return;
+      }
+
+      const response = await fetch(
+        "https://agri-wise-backend.vercel.app/api/v1/user/update",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: username,
+            phone: phoneNumber,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      Alert.alert("Success", "Profile updated successfully");
+      setUsername("");
+      setPhoneNumber("");
+    } catch (error: any) {
+      console.error("Update failed:", error);
+      Alert.alert("Error", error.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = () => {
+    if (!username.trim() || !phoneNumber.trim()) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    updateUserProfile();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <MaterialIcons name="chevron-left" size={24} color="black" />
-        </TouchableOpacity>
-        <View style={styles.titleContainer}>
-          <MaterialIcons name="security" size={24} color="#4BA26A" />
-          <Text style={styles.headerTitle}>Privacy Policy</Text>
-        </View>
-      </View>
-
       <View style={styles.content}>
-        <Text style={styles.missionText}>
-          We're on a mission to make renting the new black, by providing
-          seamless comfort with affordable pricing.
-        </Text>
+        <View style={styles.profileSection}>
+          <Image
+            source={require("../assets/images/profile.png")}
+            style={styles.profileImage}
+          />
+        </View>
 
-        <Text style={styles.descriptionText}>
-          With us, you can rent a wide range of well-conditioned vehicles, like,
-          SUVs, MUVs, sedans, vintage cars and chariots at very affordable
-          prices.
-        </Text>
+        <View style={styles.formSection}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Username</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter username"
+              value={username}
+              onChangeText={setUsername}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Phone Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter phone number"
+              keyboardType="numeric"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+            />
+          </View>
+        </View>
+        <CustomButton
+          title={loading ? "Updating..." : "Update"}
+          onPress={handleUpdate}
+          disabled={loading}
+        />
       </View>
     </SafeAreaView>
   );
@@ -52,18 +114,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   header: {
-    backgroundColor: "#e0f2e9",
+    backgroundColor: "#fff",
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
   backButton: {
     marginRight: 10,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
   },
   headerTitle: {
     fontSize: 20,
@@ -71,15 +130,43 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    // flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  missionText: {
+  profileSection: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#f0f0f0",
+    marginBottom: 10,
+  },
+  changePictureText: {
+    color: "#4BA26A",
     fontSize: 16,
+  },
+  formSection: {
+    marginBottom: 30,
+    width: "100%",
+  },
+  inputContainer: {
     marginBottom: 20,
-    lineHeight: 24,
   },
-  descriptionText: {
+  label: {
     fontSize: 16,
-    lineHeight: 24,
+    marginBottom: 8,
     color: "#333",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
   },
 });

@@ -106,6 +106,7 @@ const Otp = ({ route }: any) => {
       );
       const res = await fetchResponse.json();
       setItem("token", res.token);
+      setItem("appwriteUserId", userId);
       navigation.push("/Success");
     } catch (error: any) {
       Alert.alert("Error", error.message);

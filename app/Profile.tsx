@@ -23,7 +23,15 @@ import {
   BottomSheetView,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import { getItem } from "@/utils/asyncStorage";
+import { getItem, setItem } from "@/utils/asyncStorage";
+
+import { Client, Account, ID } from "react-native-appwrite";
+
+const client = new Client()
+  .setProject("67c2b034000f4161854a")
+  .setPlatform("com.syedmughis.agriwise");
+
+const account = new Account(client);
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -72,7 +80,6 @@ export default function Profile() {
     fetchUser();
   }, []);
 
-  // callbacks
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
@@ -80,7 +87,17 @@ export default function Profile() {
     console.log("handleSheetChanges", index);
   }, []);
 
-  // Add snapPoints for the modal height
+  const handleLogout = async () => {
+    try {
+      const response = await account.deleteSession("current");
+      navigation.navigate("login" as never);
+      setItem("token", "");
+      setItem("appwriteUserId", "");
+    } catch (error: any) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   const snapPoints = useMemo(() => ["35%"], []);
 
   return (
@@ -114,7 +131,7 @@ export default function Profile() {
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
-                navigation.navigate("Privacy" as never);
+                navigation.navigate("Account" as never);
               }}
             >
               <MaterialIcons name="person" size={24} color="#4BA26A" />
@@ -190,9 +207,7 @@ export default function Profile() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.logoutButton]}
-                  onPress={() => {
-                    console.log("Logging out...");
-                  }}
+                  onPress={handleLogout}
                 >
                   <Text style={styles.logoutButtonText}>Yes, Logout</Text>
                 </TouchableOpacity>

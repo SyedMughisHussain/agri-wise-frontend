@@ -13,15 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
-type RootStackParamList = {
-  Profile: undefined;
-  "(tabs)": undefined;
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
 export default function TabLayout() {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation();
 
   return (
     <Tab.Navigator
@@ -78,7 +71,7 @@ export default function TabLayout() {
           headerRight: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Profile");
+                navigation.navigate("Profile" as never);
               }}
               style={{ marginRight: 12 }}
             >

@@ -3,12 +3,18 @@ import TabLayout from "../(tabs)/_layout";
 import Profile from "../Profile";
 import Privacy from "../Privacy";
 import Account from "../Account";
+import Login from "../login";
 
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
   return (
     <Stack.Navigator initialRouteName={"(tabs)"}>
+      <Stack.Screen
+        name="login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="(tabs)"
         component={TabLayout}
