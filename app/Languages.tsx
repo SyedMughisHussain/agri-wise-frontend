@@ -4,19 +4,12 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import CustomButton from "@/components/CustomButton";
 
-type PrivacyScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-};
-
-export default function Languages({ navigation }: PrivacyScreenProps) {
+export default function Languages() {
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity style={styles.backButton}>
           <MaterialIcons name="chevron-left" size={24} color="black" />
         </TouchableOpacity>
         <View style={styles.titleContainer}>

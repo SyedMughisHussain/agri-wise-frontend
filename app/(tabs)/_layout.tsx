@@ -7,14 +7,15 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabTwoScreen from "./explore";
-import HomeScreen from "./index";
+import HomeScreen from "./Home";
 import Notifications from "./notifications";
-import { useNavigation } from "@react-navigation/native";
+import HomeScreenStack from "../navigation/HomeScreenStack";
+import { useRouter } from "expo-router";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
-  const navigation = useNavigation();
+  const navigate = useRouter();
 
   return (
     <Tab.Navigator
@@ -49,8 +50,8 @@ export default function TabLayout() {
       }}
     >
       <Tab.Screen
-        name="index"
-        component={HomeScreen}
+        name="HomeStack"
+        component={HomeScreenStack}
         options={{
           title: "Home",
           headerTitle: "",
@@ -70,10 +71,8 @@ export default function TabLayout() {
           ),
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Profile" as never);
-              }}
               style={{ marginRight: 12 }}
+              onPress={() => navigate.push("/Profile")}
             >
               <Image
                 source={require("../../assets/images/profile.png")}

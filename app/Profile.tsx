@@ -14,7 +14,6 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -26,6 +25,7 @@ import {
 import { getItem, setItem } from "@/utils/asyncStorage";
 
 import { Client, Account, ID } from "react-native-appwrite";
+import { useRouter } from "expo-router";
 
 const client = new Client()
   .setProject("67c2b034000f4161854a")
@@ -34,7 +34,7 @@ const client = new Client()
 const account = new Account(client);
 
 export default function Profile() {
-  const navigation = useNavigation();
+  const navigation = useRouter();
 
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -131,7 +131,7 @@ export default function Profile() {
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
-                navigation.navigate("Account" as never);
+                navigation.push("/Account");
               }}
             >
               <MaterialIcons name="person" size={24} color="#4BA26A" />
@@ -142,7 +142,7 @@ export default function Profile() {
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
-                navigation.navigate("Privacy" as never);
+                navigation.push("/Privacy");
               }}
             >
               <MaterialIcons name="security" size={24} color="#4BA26A" />
@@ -159,7 +159,7 @@ export default function Profile() {
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
-                navigation.navigate("Language" as never);
+                navigation.push("/Languages");
               }}
             >
               <MaterialIcons name="language" size={24} color="#4BA26A" />
