@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 
 const client = new Client()
-  .setProject("67d01f8a0025d3d2eddb")
+  .setProject("67d5d75a00164952a0a2")
   .setPlatform("com.syedmughis.agriwise");
 
 const account = new Account(client);

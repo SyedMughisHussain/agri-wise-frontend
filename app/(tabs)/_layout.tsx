@@ -55,6 +55,7 @@ export default function TabLayout() {
         options={{
           title: "Home",
           headerTitle: "",
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <IconSymbol
               size={28}
@@ -62,34 +63,6 @@ export default function TabLayout() {
               color={focused ? "#4BA26A" : "#9DD0AF"}
             />
           ),
-          headerLeft: () => (
-            <Image
-              source={require("../../assets/images/logo.png")}
-              style={{ width: 70, height: 65, marginLeft: 12 }}
-              resizeMode="contain"
-            />
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 12 }}
-              onPress={() => navigate.push("/Profile")}
-            >
-              <Image
-                source={require("../../assets/images/profile.png")}
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                }}
-              />
-            </TouchableOpacity>
-          ),
-          headerStyle: {
-            backgroundColor: "white",
-            elevation: 0,
-            shadowOpacity: 0,
-            borderBottomWidth: 0,
-          },
         }}
       />
       <Tab.Screen

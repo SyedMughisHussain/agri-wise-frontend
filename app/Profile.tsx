@@ -28,13 +28,13 @@ import { Client, Account, ID } from "react-native-appwrite";
 import { useRouter } from "expo-router";
 
 const client = new Client()
-  .setProject("67c2b034000f4161854a")
+  .setProject("67d5d75a00164952a0a2")
   .setPlatform("com.syedmughis.agriwise");
 
 const account = new Account(client);
 
-export default function Profile() {
-  const navigation = useRouter();
+export default function Profile({ navigation }: { navigation: any }) {
+  const router = useRouter();
 
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -89,8 +89,8 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      const response = await account.deleteSession("current");
-      navigation.navigate("login" as never);
+      await account.deleteSession("current");
+      router.push("/login");
       setItem("token", "");
       setItem("appwriteUserId", "");
     } catch (error: any) {
@@ -131,7 +131,7 @@ export default function Profile() {
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
-                navigation.push("/Account");
+                navigation.navigate("Account");
               }}
             >
               <MaterialIcons name="person" size={24} color="#4BA26A" />
@@ -142,7 +142,7 @@ export default function Profile() {
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
-                navigation.push("/Privacy");
+                navigation.navigate("Privacy");
               }}
             >
               <MaterialIcons name="security" size={24} color="#4BA26A" />
@@ -150,7 +150,12 @@ export default function Profile() {
               <MaterialIcons name="chevron-right" size={24} color="#4BA26A" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigation.navigate("MyFields");
+              }}
+            >
               <MaterialIcons name="eco" size={24} color="#4BA26A" />
               <Text style={styles.menuText}>My Fields</Text>
               <MaterialIcons name="chevron-right" size={24} color="#4BA26A" />
@@ -159,7 +164,7 @@ export default function Profile() {
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => {
-                navigation.push("/Languages");
+                navigation.navigate("Languages");
               }}
             >
               <MaterialIcons name="language" size={24} color="#4BA26A" />

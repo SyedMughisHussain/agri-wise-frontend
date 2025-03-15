@@ -5,6 +5,7 @@ import Privacy from "../Privacy";
 import Account from "../Account";
 import Login from "../login";
 import Languages from "../Languages";
+import MyFields from "../MyFields";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,8 +32,15 @@ const MainStack = () => {
       />
       <Stack.Screen name="Account" component={Account} />
       <Stack.Screen
-        name="Language"
+        name="Languages"
         component={Languages}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="MyFields"
+        component={MyFields}
         options={{
           headerShown: false,
         }}

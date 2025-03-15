@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 
 type WeatherApiType = {
   cityName: string;
@@ -24,7 +25,7 @@ type WeatherApiType = {
   description: string;
 };
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: { navigation: any }) {
   const [weatherData, setWeatherData] = useState<WeatherApiType | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +61,26 @@ export default function HomeScreen() {
         paddingLeft: 12,
       }}
     >
+      {/* Add Header Section */}
+      <View style={styles.header}>
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("ProfileStack");
+          }}
+        >
+          <Image
+            source={require("../../assets/images/profile.png")}
+            style={styles.avatarImage}
+            resizeMode="cover"
+          />
+        </TouchableOpacity>
+      </View>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Weather Card */}
         {isLoading ? (
@@ -397,5 +418,19 @@ const styles = StyleSheet.create({
   leafIcon: {
     width: 24,
     height: 24,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  logoImage: {
+    width: 65,
+    height: 70,
+  },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginTop: 12,
   },
 });

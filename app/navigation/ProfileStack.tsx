@@ -10,6 +10,8 @@ import HomeScreen from "../(tabs)/Home";
 import Profile from "../Profile";
 import Privacy from "../Privacy";
 import Languages from "../Languages";
+import Account from "../Account";
+import MyFields from "../MyFields";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +21,16 @@ const ProfileScreenStack = () => {
       <Stack.Screen
         name="Profile"
         component={Profile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Account"
+        component={Account}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MyFields"
+        component={MyFields}
         options={{ headerShown: false }}
       />
       <Stack.Screen

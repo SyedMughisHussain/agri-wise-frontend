@@ -7,10 +7,10 @@ export default function Success() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.push("/(tabs)");
+      navigation.push("/(tabs)/Home");
     }, 3000);
 
-    return () => clearTimeout(timer); // Cleanup function to avoid memory leaks
+    return () => clearTimeout(timer);
   }, []);
 
   return (

@@ -1,15 +1,20 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import CustomButton from "@/components/CustomButton";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Languages() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
           <MaterialIcons name="chevron-left" size={24} color="black" />
         </TouchableOpacity>
         <View style={styles.titleContainer}>

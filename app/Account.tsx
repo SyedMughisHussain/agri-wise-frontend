@@ -29,7 +29,7 @@ export default function Account() {
       const response = await fetch(
         "https://agri-wise-backend.vercel.app/api/v1/user/update",
         {
-          method: "PATCH",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
