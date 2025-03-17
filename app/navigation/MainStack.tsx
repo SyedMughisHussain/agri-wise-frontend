@@ -6,6 +6,9 @@ import Account from "../Account";
 import Login from "../login";
 import Languages from "../Languages";
 import MyFields from "../MyFields";
+import CameraPermissionScreen from "../ScanCrop";
+import CameraPermission from "../ScanCrop";
+import ProfileScreenStack from "./ProfileStack";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +44,20 @@ const MainStack = () => {
       <Stack.Screen
         name="MyFields"
         component={MyFields}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ScanCrop"
+        component={CameraPermission}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="navigation/ProfileStack"
+        component={ProfileScreenStack}
         options={{
           headerShown: false,
         }}

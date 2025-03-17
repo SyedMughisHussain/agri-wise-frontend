@@ -9,6 +9,7 @@ import TabLayout from "../(tabs)/_layout";
 import HomeScreen from "../(tabs)/Home";
 import Profile from "../Profile";
 import ProfileScreenStack from "./ProfileStack";
+import CameraPermissionScreen from "../ScanCrop";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,11 @@ const HomeScreenStack = () => {
         component={ProfileScreenStack}
         options={{ headerShown: false }}
       />
+      {/* <Stack.Screen
+        name="ScanCrop"
+        component={CameraPermissionScreen}
+        options={{ headerShown: false }}
+      /> */}
     </Stack.Navigator>
   );
 };

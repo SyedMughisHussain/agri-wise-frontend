@@ -30,6 +30,8 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const nav = useRouter();
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -70,7 +72,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         />
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("ProfileStack");
+            nav.push("/navigation/ProfileStack");
           }}
         >
           <Image
@@ -209,7 +211,12 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 />
               </View>
               <Text style={styles.featureDescription}>Scan your crop</Text>
-              <TouchableOpacity style={styles.featureButton}>
+              <TouchableOpacity
+                style={styles.featureButton}
+                onPress={() => {
+                  nav.push("/ScanCrop");
+                }}
+              >
                 <Text style={styles.featureButtonText}>Scan Crop</Text>
                 <View style={styles.featureArrowButton}>
                   <IconSymbol size={18} name="chevron.right" color="#4CAF50" />
