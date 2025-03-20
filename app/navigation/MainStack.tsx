@@ -9,6 +9,7 @@ import MyFields from "../MyFields";
 import CameraPermissionScreen from "../ScanCrop";
 import CameraPermission from "../ScanCrop";
 import ProfileScreenStack from "./ProfileStack";
+import CropImage from "../../components/CropImage";
 
 const Stack = createNativeStackNavigator();
 

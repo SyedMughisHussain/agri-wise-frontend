@@ -1,3 +1,4 @@
+import * as React from "react";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
 import {
@@ -12,12 +13,15 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import CropImage from "../components/CropImage";
 
 export default function CameraPermission() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null | undefined>(
+    null
+  );
   const cameraRef = useRef<CameraView>(null);
 
   const navigate = useRouter();
@@ -26,12 +30,7 @@ export default function CameraPermission() {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync();
-        Alert.alert("Success", "Photo captured!", [
-          {
-            text: "OK",
-            onPress: () => console.log("Photo taken: ", photo?.uri),
-          },
-        ]);
+        setSelectedImage(photo?.uri);
       } catch (error) {
         console.error("Failed to take picture:", error);
         Alert.alert("Error", "Failed to take picture");
@@ -73,54 +72,55 @@ export default function CameraPermission() {
     );
   }
 
+  const onClose = () => {
+    setSelectedImage(null);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={() => {
-            navigate.back();
-          }}
-        >
-          <Ionicons name="close-circle" size={30} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Identify the crop</Text>
-      </View>
-      <CameraView
-        style={styles.camera}
-        facing={facing}
-        ref={cameraRef}
-        enableTorch={flash}
-      >
-        <View style={styles.controlsContainer}>
-          <TouchableOpacity style={styles.sideButton} onPress={pickImage}>
-            <Ionicons name="images-outline" size={28} color="white" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
-            <View style={styles.captureInner}></View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.sideButton} onPress={toggleFlash}>
-            <Ionicons
-              name={flash ? "flash-outline" : "flash-off-outline"}
-              size={28}
-              color="white"
-            />
-          </TouchableOpacity>
-        </View>
-      </CameraView>
-
-      {selectedImage && (
-        <View style={styles.previewContainer}>
-          <Image source={{ uri: selectedImage }} style={styles.preview} />
-          <TouchableOpacity
-            style={styles.closePreview}
-            onPress={() => setSelectedImage(null)}
+      {!selectedImage ? (
+        <>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                navigate.back();
+              }}
+            >
+              <Ionicons name="close-circle" size={30} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Identify the crop</Text>
+          </View>
+          <CameraView
+            style={styles.camera}
+            facing={facing}
+            ref={cameraRef}
+            enableTorch={flash}
           >
-            <Ionicons name="close-circle" size={30} color="white" />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.controlsContainer}>
+              <TouchableOpacity style={styles.sideButton} onPress={pickImage}>
+                <Ionicons name="images-outline" size={28} color="white" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.captureButton}
+                onPress={takePicture}
+              >
+                <View style={styles.captureInner}></View>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sideButton} onPress={toggleFlash}>
+                <Ionicons
+                  name={flash ? "flash-outline" : "flash-off-outline"}
+                  size={28}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </View>
+          </CameraView>
+        </>
+      ) : (
+        <CropImage imageUrl={selectedImage} onClose={onClose} />
       )}
     </View>
   );
