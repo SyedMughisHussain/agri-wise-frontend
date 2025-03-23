@@ -14,27 +14,131 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import CropImage from "../components/CropImage";
+import axios from "axios";
+import * as FileSystem from "expo-file-system";
 
 export default function CameraPermission() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState<string | null | undefined>(
-    null
-  );
+  const [image, setImage] = useState<string | null | undefined>(null);
+  const [disease, setDisease] = useState("");
+  const [loading, setLoading] = useState(false);
   const cameraRef = useRef<CameraView>(null);
 
   const navigate = useRouter();
+
+  const GEMINI_API_KEY = "AIzaSyC1dhRhA9TB51M8zoKbDh_XYa3JFam_Vuo";
 
   const takePicture = async () => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync();
-        setSelectedImage(photo?.uri);
+        setImage(photo?.uri);
       } catch (error) {
         console.error("Failed to take picture:", error);
         Alert.alert("Error", "Failed to take picture");
       }
+    }
+  };
+  console.log("disease", disease);
+
+  const getInsights = async () => {
+    if (!image) {
+      console.log("NO Image");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const base64Image = await FileSystem.readAsStringAsync(image, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const apiUrl =
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+      const apiKey = GEMINI_API_KEY;
+
+      const requestBody = {
+        contents: [
+          {
+            parts: [
+              {
+                text: "your task is to identify plant or crop health issues with precision. Analyze any image of a plant or leaf or crop I provide, and detect all abnormal conditions, whether they are diseases, pests, deficiencies, or decay. Respond strictly with the name of the condition identified, and nothing else—no explanations, no additional text. If a condition is unrecognizable, reply with 'I don't know'. If the image is not plant-related or crop-related, say 'Please pick another image'",
+              },
+              {
+                inline_data: {
+                  mime_type: "image/jpeg",
+                  data: base64Image,
+                },
+              },
+            ],
+          },
+        ],
+        safety_settings: [
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_NONE",
+          },
+        ],
+        generation_config: {
+          temperature: 0.4,
+          top_p: 1,
+          top_k: 32,
+          max_output_tokens: 1024,
+        },
+      };
+
+      const response = await axios({
+        method: "post",
+        url: `${apiUrl}?key=${apiKey}`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: requestBody,
+      });
+
+      if (response.status === 200) {
+        const generatedText = response.data.candidates[0].content.parts[0].text;
+        setDisease(generatedText);
+      } else {
+        console.error("API Error Response:", JSON.stringify(response.data));
+        setDisease(
+          `Error: ${response.status} - ${
+            response.data?.error?.message || "Unknown error"
+          }`
+        );
+      }
+    } catch (err: any) {
+      console.error("Exception during image analysis:", err);
+
+      if (err.response) {
+        console.error(
+          "Error response data:",
+          JSON.stringify(err.response.data)
+        );
+        console.error("Error response status:", err.response.status);
+        console.error(
+          "Error response headers:",
+          JSON.stringify(err.response.headers)
+        );
+
+        setDisease(
+          `Error ${err.response.status}: ${JSON.stringify(
+            err.response.data.error || {}
+          )}`
+        );
+      } else if (err.request) {
+        // The request was made but no response was received
+        console.error("No response received:", err.request);
+        setDisease("Error: No response from API server");
+      } else {
+        // Something happened in setting up the request
+        console.error("Request setup error:", err.message);
+        setDisease(`Error: ${err.message}`);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,14 +148,14 @@ export default function CameraPermission() {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
 
     if (!result.canceled && result.assets && result.assets[0]) {
-      setSelectedImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -73,12 +177,12 @@ export default function CameraPermission() {
   }
 
   const onClose = () => {
-    setSelectedImage(null);
+    setImage(null);
   };
 
   return (
     <View style={styles.container}>
-      {!selectedImage ? (
+      {!image ? (
         <>
           <View style={styles.header}>
             <TouchableOpacity
@@ -120,7 +224,14 @@ export default function CameraPermission() {
           </CameraView>
         </>
       ) : (
-        <CropImage imageUrl={selectedImage} onClose={onClose} />
+        <CropImage
+          imageUrl={image}
+          onClose={onClose}
+          onConfirm={getInsights}
+          loading={loading}
+          disease={disease}
+          setImage={setImage}
+        />
       )}
     </View>
   );
