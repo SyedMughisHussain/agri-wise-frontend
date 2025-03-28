@@ -22,6 +22,11 @@ const HomeScreenStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="ProfileStack"
         component={ProfileScreenStack}
         options={{ headerShown: false }}

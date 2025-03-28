@@ -10,6 +10,8 @@ import CameraPermissionScreen from "../ScanCrop";
 import CameraPermission from "../ScanCrop";
 import ProfileScreenStack from "./ProfileStack";
 import CropImage from "../../components/CropImage";
+import DiagnoseDisease from "../DiagnoseDisease";
+import ScanCrop from "../ScanCrop";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +28,6 @@ const MainStack = () => {
         component={TabLayout}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen
         name="Privacy"
         component={Privacy}
@@ -51,7 +52,7 @@ const MainStack = () => {
       />
       <Stack.Screen
         name="ScanCrop"
-        component={CameraPermission}
+        component={ScanCrop}
         options={{
           headerShown: false,
         }}
@@ -59,6 +60,20 @@ const MainStack = () => {
       <Stack.Screen
         name="navigation/ProfileStack"
         component={ProfileScreenStack}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="DiagnoseDisease"
+        component={DiagnoseDisease}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
         options={{
           headerShown: false,
         }}

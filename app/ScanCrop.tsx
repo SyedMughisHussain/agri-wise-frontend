@@ -17,7 +17,7 @@ import CropImage from "../components/CropImage";
 import axios from "axios";
 import * as FileSystem from "expo-file-system";
 
-export default function CameraPermission() {
+export default function ScanCrop() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState<boolean>(false);
@@ -160,20 +160,30 @@ export default function CameraPermission() {
   };
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
+    Alert.alert(
+      "Camera Access Required",
+      "This app needs camera access to capture photos and videos. Please enable camera permissions in your device settings.",
+      [
+        {
+          text: "Allow",
+          onPress: () => {
+            requestPermission();
+          },
+        },
+        {
+          text: "Don't Allow",
+          onPress: () => {
+            navigate.back();
+          },
+          style: "cancel",
+        },
+      ]
     );
+    return <View />;
   }
 
   const onClose = () => {
@@ -231,6 +241,7 @@ export default function CameraPermission() {
           loading={loading}
           disease={disease}
           setImage={setImage}
+          setDisease={setDisease}
         />
       )}
     </View>

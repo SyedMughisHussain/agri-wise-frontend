@@ -6,6 +6,10 @@ import Login from "../login";
 import Otp from "../Otp";
 import Success from "../Success";
 import TabLayout from "../(tabs)/_layout";
+import Profile from "../Profile";
+import CameraPermission from "../ScanCrop";
+import ScanCrop from "../ScanCrop";
+import ProfileScreenStack from "./ProfileStack";
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +55,16 @@ const AuthStack = () => {
       <Stack.Screen
         name="(tabs)"
         component={TabLayout}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="navigation/ProfileStack"
+        component={ProfileScreenStack}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ScanCrop"
+        component={ScanCrop}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

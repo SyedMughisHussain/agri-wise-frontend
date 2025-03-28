@@ -13,10 +13,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#4BA26A"
       },
-      "package": "com.syedmughis.agriwise"
+      "package": "com.syedmughis.agriwise",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -51,7 +55,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "a881c41f-899d-4652-98b4-f44c6b4c032e"
+        "projectId": "62c8cf5c-d0e5-4795-a6c9-2411b34b0604"
       }
     },
     "owner": "syedmughis"

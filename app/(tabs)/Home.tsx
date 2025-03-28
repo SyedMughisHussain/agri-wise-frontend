@@ -25,7 +25,7 @@ type WeatherApiType = {
   description: string;
 };
 
-export default function HomeScreen({ navigation }: { navigation: any }) {
+export default function HomeScreen() {
   const [weatherData, setWeatherData] = useState<WeatherApiType | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
