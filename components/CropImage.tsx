@@ -33,6 +33,7 @@ interface CropImageProps {
   disease: string | null;
   setImage: (image: any) => void;
   setDisease: any;
+  diseaseDetails: any;
 }
 
 const CropImage = ({
@@ -43,8 +44,14 @@ const CropImage = ({
   disease,
   setImage,
   setDisease,
+  diseaseDetails,
 }: CropImageProps) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [sectionsData, setSectionsData] = useState([
+    { type: "symptoms", content: "" },
+    { type: "prevention", content: "" },
+    { type: "solutions", content: "" },
+  ]);
   const [activeTab, setActiveTab] = useState<
     "symptoms" | "prevention" | "solutions"
   >("symptoms");
@@ -66,11 +73,46 @@ const CropImage = ({
     bottomSheetModalRef.current?.present();
   }, []);
 
+  function parseDiseaseSectionsAsArray(text: string) {
+    const symptomsMatch = text.match(
+      /\*\*Symptoms:\*\*([\s\S]*?)(?=\*\*Prevention:|$)/
+    );
+    const preventionMatch = text.match(
+      /\*\*Prevention:\*\*([\s\S]*?)(?=\*\*Suitable Solutions:|$)/
+    );
+    const solutionsMatch = text.match(
+      /\*\*Suitable Solutions:\*\*([\s\S]*?)(?=$)/
+    );
+
+    return [
+      {
+        type: "symptoms",
+        content: symptomsMatch ? symptomsMatch[1].trim() : "",
+      },
+      {
+        type: "prevention",
+        content: preventionMatch ? preventionMatch[1].trim() : "",
+      },
+      {
+        type: "solutions",
+        content: solutionsMatch ? solutionsMatch[1].trim() : "",
+        title: "Suitable Solutions",
+      },
+    ];
+  }
+
   useEffect(() => {
-    if (disease) {
+    if (diseaseDetails) {
+      const parsedSections = parseDiseaseSectionsAsArray(diseaseDetails);
+      setSectionsData(parsedSections);
+    }
+  }, [diseaseDetails]);
+
+  useEffect(() => {
+    if (disease && diseaseDetails && !loading) {
       presentBottomSheet();
     }
-  }, [disease, presentBottomSheet]);
+  }, [disease, diseaseDetails, presentBottomSheet, loading]);
 
   const snapPoints = useMemo(() => ["75%"], []);
 
@@ -92,45 +134,12 @@ const CropImage = ({
   );
 
   const renderTabContent = () => {
-    switch (activeTab) {
-      case "symptoms":
-        return (
-          <Text style={styles.tabContent}>
-            Lorem ipsum, dolor sit amet consectetur adipiscing elit. Impedir eos
-            illo cupiditate, placeat odit dicta similique expedita enim in
-            suscipit, tenetur hic aliquam ad fugiat quaerat,illum deserunt dolor
-            dignissimos tenetur hic aliquam ad fugiat quaerat, illum deserunt
-            dolor dignissimos. Repeat to simulate longer content. Lorem ipsum,
-            dolor sit amet consectetur adipiscing elit. Impedir eos illo
-            cupiditate, placeat odit dicta similique expedita enim in suscipit,
-            tenetur hic aliquam ad fugiat quaerat,illum deserunt dolor
-            dignissimos tenetur hic aliquam ad fugiat quaerat, illum deserunt
-            dolor dignissimos.
-          </Text>
-        );
-      case "prevention":
-        return (
-          <Text style={styles.tabContent}>
-            Prevention details about the disease. Consectetur adipiscing elit.
-            Impedir eos illo cupiditate, placeat odit dicta similique expedita
-            enim in suscipit, tenetur hic aliquam ad fugiat quaerat. Additional
-            prevention information to simulate longer content. Consectetur
-            adipiscing elit. Impedir eos illo cupiditate, placeat odit dicta
-            similique expedita enim in suscipit.
-          </Text>
-        );
-      case "solutions":
-        return (
-          <Text style={styles.tabContent}>
-            Suitable solutions for managing the disease. Enim in suscipit,
-            tenetur hic aliquam ad fugiat quaerat,illum deserunt dolor
-            dignissimos tenetur hic aliquam ad fugiat quaerat. More detailed
-            solutions to demonstrate scrollable content. Enim in suscipit,
-            tenetur hic aliquam ad fugiat quaerat, illum deserunt dolor
-            dignissimos tenetur hic aliquam ad fugiat quaerat.
-          </Text>
-        );
-    }
+    const currentSection = sectionsData.find(
+      (section) => section.type === activeTab
+    );
+    return (
+      <Text style={styles.tabContent}>{currentSection?.content || ""}</Text>
+    );
   };
 
   return (

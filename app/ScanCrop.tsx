@@ -24,6 +24,7 @@ export default function ScanCrop() {
   const [image, setImage] = useState<string | null | undefined>(null);
   const [disease, setDisease] = useState("");
   const [loading, setLoading] = useState(false);
+  const [diseaseDetails, setDiseaseDetails] = useState<string | null>(null);
   const cameraRef = useRef<CameraView>(null);
 
   const navigate = useRouter();
@@ -41,7 +42,6 @@ export default function ScanCrop() {
       }
     }
   };
-  console.log("disease", disease);
 
   const getInsights = async () => {
     if (!image) {
@@ -59,7 +59,7 @@ export default function ScanCrop() {
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
       const apiKey = GEMINI_API_KEY;
 
-      const requestBody = {
+      const diseaseIdentificationBody = {
         contents: [
           {
             parts: [
@@ -89,23 +89,72 @@ export default function ScanCrop() {
         },
       };
 
-      const response = await axios({
+      const diseaseResponse = await axios({
         method: "post",
         url: `${apiUrl}?key=${apiKey}`,
         headers: {
           "Content-Type": "application/json",
         },
-        data: requestBody,
+        data: diseaseIdentificationBody,
       });
 
-      if (response.status === 200) {
-        const generatedText = response.data.candidates[0].content.parts[0].text;
-        setDisease(generatedText);
+      if (diseaseResponse.status === 200) {
+        const diseaseName =
+          diseaseResponse.data.candidates[0].content.parts[0].text;
+        setDisease(diseaseName);
+
+        const diseaseDetailsBody = {
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Upon receiving the name of a plant or crop disease, provide Symptoms, Prevention and Suitable Solutions accorfing to disease.These Symptoms, Prevention and Suitable Solutions should be concise, clear, and limited to 6 lines each in paragraph format. No additional information or context is needed. The disease is ${diseaseName}`,
+                },
+              ],
+            },
+          ],
+          safety_settings: [
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_NONE",
+            },
+          ],
+          generation_config: {
+            temperature: 0.4,
+            top_p: 1,
+            top_k: 32,
+            max_output_tokens: 2048,
+          },
+        };
+
+        const detailsResponse = await axios({
+          method: "post",
+          url: `${apiUrl}?key=${apiKey}`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: diseaseDetailsBody,
+        });
+
+        if (detailsResponse.status === 200) {
+          const diseaseDetails =
+            detailsResponse.data.candidates[0].content.parts[0].text;
+          setDiseaseDetails(diseaseDetails);
+        } else {
+          console.error(
+            "Details API Error Response:",
+            JSON.stringify(detailsResponse.data)
+          );
+          setDiseaseDetails("Could not fetch disease details");
+        }
       } else {
-        console.error("API Error Response:", JSON.stringify(response.data));
+        console.error(
+          "Disease Identification API Error Response:",
+          JSON.stringify(diseaseResponse.data)
+        );
         setDisease(
-          `Error: ${response.status} - ${
-            response.data?.error?.message || "Unknown error"
+          `Error: ${diseaseResponse.status} - ${
+            diseaseResponse.data?.error?.message || "Unknown error"
           }`
         );
       }
@@ -117,23 +166,15 @@ export default function ScanCrop() {
           "Error response data:",
           JSON.stringify(err.response.data)
         );
-        console.error("Error response status:", err.response.status);
-        console.error(
-          "Error response headers:",
-          JSON.stringify(err.response.headers)
-        );
-
         setDisease(
           `Error ${err.response.status}: ${JSON.stringify(
             err.response.data.error || {}
           )}`
         );
       } else if (err.request) {
-        // The request was made but no response was received
         console.error("No response received:", err.request);
         setDisease("Error: No response from API server");
       } else {
-        // Something happened in setting up the request
         console.error("Request setup error:", err.message);
         setDisease(`Error: ${err.message}`);
       }
@@ -240,6 +281,7 @@ export default function ScanCrop() {
           onConfirm={getInsights}
           loading={loading}
           disease={disease}
+          diseaseDetails={diseaseDetails}
           setImage={setImage}
           setDisease={setDisease}
         />
