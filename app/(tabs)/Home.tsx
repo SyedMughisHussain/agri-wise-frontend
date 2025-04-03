@@ -1,109 +1,3 @@
-// import {
-//   Image,
-//   StyleSheet,
-//   Platform,
-//   Text,
-//   View,
-//   TouchableOpacity,
-//   ScrollView,
-//   ActivityIndicator,
-// } from "react-native";
-
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { IconSymbol } from "@/components/ui/IconSymbol";
-// import { LinearGradient } from "expo-linear-gradient";
-// import { useEffect, useState } from "react";
-// import { useRouter } from "expo-router";
-// import { getItem } from "@/utils/asyncStorage";
-
-// type WeatherApiType = {
-//   cityName: string;
-//   country: string;
-//   weather: string;
-//   temperature: number;
-//   humidity: number;
-//   windSpeed: number;
-//   description: string;
-// };
-
-// export default function HomeScreen() {
-//   const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
-//   const [weatherData, setWeatherData] = useState<WeatherApiType | null>(null);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const nav = useRouter();
-
-//   const crops = [
-//     { name: "Wheat", image: require("../../assets/images/wheat.png") },
-//     {
-//       name: "Watermelon",
-//       image: require("../../assets/images/watermelon.png"),
-//     },
-//     { name: "Corn", image: require("../../assets/images/corn.png") },
-//     { name: "Tomato", image: require("../../assets/images/tomato.png") },
-//     { name: "Rice", image: require("../../assets/images/rice.png") },
-//     { name: "Cotton", image: require("../../assets/images/cotton.png") },
-//     { name: "Sugar Cane", image: require("../../assets/images/sugarcane.png") },
-//   ];
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       setIsLoading(true);
-//       const response = await fetch(
-//         "https://api.openweathermap.org/data/2.5/weather?q=karachi,pk&appid=ed9762be5575457144a931c00af77267"
-//       );
-//       const data = await response.json();
-
-//       setWeatherData({
-//         cityName: data.name,
-//         country: data.sys.country,
-//         weather: data.weather[0].main,
-//         temperature: data.main.temp,
-//         humidity: data.main.humidity,
-//         windSpeed: data.wind.speed,
-//         description: data.weather[0].description,
-//       });
-//       setIsLoading(false);
-//     };
-//     fetchData();
-//     fetchUser();
-//   }, []);
-
-//   const fetchUser = async () => {
-//     try {
-//       // setLoading(true);
-//       const token = await getItem("token");
-
-//       if (!token) {
-//         throw new Error("No token found");
-//       }
-
-//       const response = await fetch(
-//         "https://agri-wise-backend.vercel.app/api/v1/user/me",
-//         {
-//           method: "GET",
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             Accept: "application/json",
-//           },
-//         }
-//       );
-
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! status: ${response.status}`);
-//       }
-
-//       const data = await response.json();
-//       // setUserData(data.user);
-//       setSelectedCrops(data.user.crops);
-//       console.log("Data", data.user.crops);
-//     } catch (error: any) {
-//       console.error("Error fetching user:", error);
-//       // setError(error.message);
-//     } finally {
-//       // setLoading(false);
-//     }
-//   };
-
 import {
   Image,
   StyleSheet,
@@ -119,9 +13,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { getItem } from "@/utils/asyncStorage";
+import { useFocusEffect } from "@react-navigation/native";
 
 type WeatherApiType = {
   cityName: string;
@@ -219,6 +114,14 @@ export default function HomeScreen() {
     const crop = crops.find((c) => c.name === cropName);
     return crop ? crop.image : require("../../assets/images/wheat.png");
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      // This will run when the screen comes into focus
+      fetchUser();
+      // You can also refetch weather data here if needed
+    }, [])
+  );
 
   return (
     <SafeAreaView
@@ -495,7 +398,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#E8F5E9",
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 15,
     padding: 12,
     alignItems: "center",
     justifyContent: "space-between",
@@ -647,7 +550,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   selectedCropsContainer: {
-    paddingVertical: 15,
+    paddingVertical: 10,
     paddingHorizontal: 5,
   },
   cropItem: {

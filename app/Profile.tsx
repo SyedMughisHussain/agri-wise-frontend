@@ -26,6 +26,7 @@ import { getItem, setItem } from "@/utils/asyncStorage";
 
 import { Client, Account, ID } from "react-native-appwrite";
 import { useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 
 const client = new Client()
   .setProject("67e5a6e300357b67e6b9")
@@ -79,6 +80,12 @@ export default function Profile({ navigation }: { navigation: any }) {
   useEffect(() => {
     fetchUser();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUser();
+    }, [])
+  );
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
