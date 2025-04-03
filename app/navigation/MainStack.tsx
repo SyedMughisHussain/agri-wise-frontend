@@ -12,6 +12,7 @@ import ProfileScreenStack from "./ProfileStack";
 import CropImage from "../../components/CropImage";
 import DiagnoseDisease from "../DiagnoseDisease";
 import ScanCrop from "../ScanCrop";
+import AddCrops from "../AddCrops";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +77,13 @@ const MainStack = () => {
         component={Profile}
         options={{
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddCrops"
+        component={AddCrops}
+        options={{
+          headerTitle: "Select your crop",
         }}
       />
     </Stack.Navigator>

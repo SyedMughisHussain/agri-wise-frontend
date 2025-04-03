@@ -10,6 +10,7 @@ import Profile from "../Profile";
 import CameraPermission from "../ScanCrop";
 import ScanCrop from "../ScanCrop";
 import ProfileScreenStack from "./ProfileStack";
+import AddCrops from "../AddCrops";
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,13 @@ const AuthStack = () => {
         name="ScanCrop"
         component={ScanCrop}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddCrops"
+        component={AddCrops}
+        options={{
+          headerTitle: "Select your crop",
+        }}
       />
     </Stack.Navigator>
   );
