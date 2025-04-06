@@ -1,7 +1,6 @@
 import {
   Image,
   StyleSheet,
-  Platform,
   Text,
   View,
   TouchableOpacity,
@@ -10,6 +9,7 @@ import {
   FlatList,
 } from "react-native";
 
+import * as Location from "expo-location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { LinearGradient } from "expo-linear-gradient";
@@ -28,9 +28,16 @@ type WeatherApiType = {
   description: string;
 };
 
+type LatLon = {
+  lat: number;
+  lon: number;
+};
+
 export default function HomeScreen() {
   const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
+  const [latiLong, setLatiLong] = useState<LatLon | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherApiType | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const nav = useRouter();
 
@@ -69,7 +76,7 @@ export default function HomeScreen() {
       });
       setIsLoading(false);
     };
-    fetchData();
+    // fetchData();
     fetchUser();
   }, []);
 
@@ -117,11 +124,57 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      // This will run when the screen comes into focus
       fetchUser();
-      // You can also refetch weather data here if needed
     }, [])
   );
+
+  const getCurrentWeather = async () => {
+    console.log(latiLong?.lat);
+    console.log(latiLong?.lon);
+    setIsLoading(true);
+
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latiLong?.lat}&lon=${latiLong?.lon}&appid=ed9762be5575457144a931c00af77267`
+    );
+    const data = await response.json();
+
+    setWeatherData({
+      cityName: data.name,
+      country: data.sys.country,
+      weather: data.weather[0].main,
+      temperature: data.main.temp,
+      humidity: data.main.humidity,
+      windSpeed: data.wind.speed,
+      description: data.weather[0].description,
+    });
+    setIsLoading(false);
+
+    console.log(data);
+  };
+
+  useEffect(() => {
+    getCurrentWeather();
+  }, [latiLong]);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      setLatiLong({
+        lat: currentLocation.coords.latitude,
+        lon: currentLocation.coords.longitude,
+      });
+    })();
+  }, []);
 
   return (
     <SafeAreaView

@@ -1,16 +1,13 @@
 import React from "react";
 import { Platform, Image, TouchableOpacity } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import TabTwoScreen from "./explore";
-import HomeScreen from "./Home";
 import Notifications from "./notifications";
 import HomeScreenStack from "../navigation/HomeScreenStack";
 import { useRouter } from "expo-router";
+import LocationTracker from "./explore";
 
 const Tab = createBottomTabNavigator();
 
@@ -67,7 +64,7 @@ export default function TabLayout() {
       />
       <Tab.Screen
         name="location"
-        component={TabTwoScreen}
+        component={LocationTracker}
         options={{
           title: "Location",
           tabBarIcon: ({ focused }) => (
