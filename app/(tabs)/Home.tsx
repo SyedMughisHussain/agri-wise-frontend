@@ -228,9 +228,7 @@ export default function HomeScreen() {
               <Text style={styles.locationSmallText}>
                 H:{weatherData?.humidity}° W:{weatherData?.windSpeed}°
               </Text>
-              <Text style={styles.locationText}>
-                {weatherData?.country}, {weatherData?.cityName}
-              </Text>
+              <Text style={styles.locationText}>{weatherData?.cityName}</Text>
             </View>
             <View style={styles.weatherIconContainer}>
               <Image

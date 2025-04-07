@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import * as Location from "expo-location";
 
-// Define TypeScript interfaces for the component state
 interface LocationState {
   coords: {
     latitude: number;
@@ -25,7 +24,6 @@ export default function LocationTracker(): React.ReactElement {
     setIsLoading(true);
 
     try {
-      // Ask for permission to access location
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
@@ -34,7 +32,6 @@ export default function LocationTracker(): React.ReactElement {
         return;
       }
 
-      // Get the current location
       const currentLocation = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });

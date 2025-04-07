@@ -12,6 +12,7 @@ const MAPPING = {
   "bell.fill": "notifications",
   "house.fill": "home",
   "paperplane.fill": "send",
+  "leaf.fill": "leaf",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
   "location.fill": "location-on",

@@ -7,7 +7,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Notifications from "./notifications";
 import HomeScreenStack from "../navigation/HomeScreenStack";
 import { useRouter } from "expo-router";
-import LocationTracker from "./explore";
+import LocationTracker from "./Fields";
+
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const Tab = createBottomTabNavigator();
 
@@ -53,27 +58,29 @@ export default function TabLayout() {
           title: "Home",
           headerTitle: "",
           headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <IconSymbol
-              size={28}
-              name="house.fill"
-              color={focused ? "#4BA26A" : "#9DD0AF"}
-            />
-          ),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Entypo name="home" size={24} color="#4BA26A" />
+            ) : (
+              <MaterialCommunityIcons
+                name="home-outline"
+                size={28}
+                color="#9DD0AF"
+              />
+            ),
         }}
       />
       <Tab.Screen
-        name="location"
+        name="Fields"
         component={LocationTracker}
         options={{
-          title: "Location",
-          tabBarIcon: ({ focused }) => (
-            <IconSymbol
-              size={28}
-              name="location.fill"
-              color={focused ? "#4BA26A" : "#9DD0AF"}
-            />
-          ),
+          title: "Fields",
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Ionicons name="leaf" size={24} color="#4BA26A" />
+            ) : (
+              <Ionicons name="leaf-outline" size={24} color="#9DD0AF" />
+            ),
           headerStyle: {
             backgroundColor: "white",
             elevation: 0,
@@ -87,13 +94,12 @@ export default function TabLayout() {
         component={Notifications}
         options={{
           title: "Notifications",
-          tabBarIcon: ({ focused }) => (
-            <IconSymbol
-              size={28}
-              name="bell.fill"
-              color={focused ? "#4BA26A" : "#9DD0AF"}
-            />
-          ),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <FontAwesome name="bell" size={24} color="#4BA26A" />
+            ) : (
+              <FontAwesome name="bell-o" size={24} color="#9DD0AF" />
+            ),
           headerStyle: {
             backgroundColor: "white",
             elevation: 0,
