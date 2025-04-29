@@ -27,9 +27,9 @@ const OnboardingScreen = () => {
               />
             </View>
           ),
-          title: "Monitoring Soil and Plant",
+          title: "Smart Crop Suggestions",
           subtitle:
-            "we aim to use optical (VIR) sensing to observe te fields and make timely crop management decisions.",
+            "Get personalized crop recommendations based on your soil, weather, and market conditions—powered by AI, made for your farm.",
         },
         {
           backgroundColor: "#FFFFFF",
@@ -41,9 +41,9 @@ const OnboardingScreen = () => {
               />
             </View>
           ),
-          title: "Early detection of plant and soil diseases",
+          title: "Real-Time Monitoring & Forecasts",
           subtitle:
-            "our project can detect plant and soil diseases using an existing camera sensor that tracks the plants in real-time day by day.",
+            "Monitor crop health and get accurate weather alerts and harvest predictions—so you’re always one step ahead.",
         },
         {
           backgroundColor: "#FFFFFF",
@@ -55,9 +55,9 @@ const OnboardingScreen = () => {
               />
             </View>
           ),
-          title: "Improve agriculture precision",
+          title: "Detect Diseases with a Snap",
           subtitle:
-            "we will use satellite imagery, image processing, deep learning, computer vision, and remote sensing to detect changes in the field and crops and solve the problems whenever they pop.",
+            "Just take a photo of your crop—AgriWise will analyze it and alert you to possible diseases with instant recommendations.",
         },
       ]}
     />
