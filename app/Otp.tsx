@@ -14,7 +14,7 @@ import OTPTextView from "react-native-otp-textinput";
 import { setItem } from "@/utils/asyncStorage";
 
 const client = new Client()
-  .setProject("67ed8ed80033ea1268be")
+  .setProject("67fb9198001182c310a2")
   .setPlatform("com.syedmughis.agriwise");
 
 const account = new Account(client);

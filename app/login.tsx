@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 
 const client = new Client()
-  .setProject("67ed8ed80033ea1268be")
+  .setProject("67fb9198001182c310a2")
   .setPlatform("com.syedmughis.agriwise");
 
 const account = new Account(client);
@@ -19,6 +19,7 @@ export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
     const response = !validatePhoneNumber();
@@ -27,13 +28,29 @@ export default function Login() {
 
   const validatePhoneNumber = () => {
     if (!phoneNumber) {
-      return false;
-    }
-    const digitsOnly = phoneNumber.replace(/\s+/g, "");
-    if (digitsOnly.length !== 10) {
+      setPhoneError("");
       return false;
     }
 
+    const trimmedNumber = phoneNumber.trim();
+
+    // Check if first digit is zero
+    if (trimmedNumber.startsWith("0")) {
+      setPhoneError("Do not include zero in starting, start without zero");
+      return false;
+    }
+
+    const digitsOnly = trimmedNumber.replace(/\s+/g, "");
+    if (digitsOnly.length !== 10) {
+      setPhoneError(
+        digitsOnly.length > 10
+          ? "Phone number too long"
+          : "Phone number too short"
+      );
+      return false;
+    }
+
+    setPhoneError("");
     return true;
   };
 
@@ -108,6 +125,7 @@ export default function Login() {
         placeholder="Enter Phone Number.."
         onChangeText={setPhoneNumber}
       />
+      {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
       <CustomButton
         title="Send OTP"
         onPress={handleSubmit}
@@ -139,6 +157,7 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginTop: 4,
-    marginLeft: 4,
+    marginLeft: 112,
+    marginBottom: 8,
   },
 });

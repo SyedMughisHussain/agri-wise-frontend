@@ -24,13 +24,13 @@ import {
 } from "@gorhom/bottom-sheet";
 import { getItem, setItem } from "@/utils/asyncStorage";
 
-import { Client, Account, ID } from "react-native-appwrite";
+import { Client, Account } from "react-native-appwrite";
 import { useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 
 const client = new Client()
-  .setProject("67e5a6e300357b67e6b9")
-  .setPlatform("com.company.agri-wise");
+  .setProject("67fb9198001182c310a2")
+  .setPlatform("com.syedmughis.agriwise");
 
 const account = new Account(client);
 
